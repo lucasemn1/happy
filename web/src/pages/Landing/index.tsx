@@ -28,7 +28,7 @@ export default function Landing() {
           <span>Rio Grande do Norte</span>
         </Location>
 
-        <EnterApp to="/app"> 
+        <EnterApp to="/map"> 
           <FiArrowRight size="26" color="rgba(0, 0, 0, 0.6)"/>
         </EnterApp>
       </ContentWrapper>
