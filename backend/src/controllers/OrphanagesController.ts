@@ -61,13 +61,16 @@ export default {
     return res.status(200).json(orphanages);
   },
 
-  async show(req: Request, res: Response) {
+  show(req: Request, res: Response) {
     const orphanageRepository = getRepository(Orphanage);
 
     const id = Number(req.params.id);
 
     orphanageRepository
-      .findOneOrFail({ id })
+      .createQueryBuilder('orphanages')
+      .leftJoinAndSelect('orphanages.images', 'images')
+      .where('orphanages.id = :id', {id})
+      .getOne()
       .then(orphanage => res.status(200).json(orphanage))
       .catch(err => res.status(500).json(err));
   },
