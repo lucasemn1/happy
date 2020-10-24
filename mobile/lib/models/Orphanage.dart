@@ -17,6 +17,29 @@ class Orphanage {
     this.images = new List<Image>();
   }
 
+  static getFromResponse(Response response) {
+    var jsonResponse = json.decode(response.body);
+
+    Orphanage orphanage = new Orphanage();
+    orphanage.id = jsonResponse['id'];
+    orphanage.about = jsonResponse['about'];
+    orphanage.instructions = jsonResponse['instructions'];
+    orphanage.latitude = jsonResponse['latitude'];
+    orphanage.longitude = jsonResponse['longitude'];
+    orphanage.name = jsonResponse['name'];
+    orphanage.openOnWeekends = jsonResponse['open_on_weekends'];
+    orphanage.openingHours = jsonResponse['opening_hours'];
+
+    List images = jsonResponse['images'] as List;
+
+    images.forEach((image) {
+      Image serializatedImage = new Image(image['id'], image['name']);
+      orphanage.images.add(serializatedImage);
+    });
+
+    return orphanage;
+  }
+
   static getListFromResponse(Response response) {
     List jsonResponse = json.decode(response.body) as List;
 
@@ -33,6 +56,13 @@ class Orphanage {
       orphanage.name = element['name'];
       orphanage.openOnWeekends = element['open_on_weekends'];
       orphanage.openingHours = element['opening_hours'];
+
+      List images = element['images'] as List;
+
+      images.forEach((image) {
+        Image serializatedImage = new Image(image['id'], image['name']);
+        orphanage.images.add(serializatedImage);
+      });
 
       orphanages.add(orphanage);
     });
@@ -51,6 +81,7 @@ class Orphanage {
       instructions: $instructions,
       openingHours: $openingHours,
       openOnWeekends: $openOnWeekends,
+      images: $images,
     ''';
   }
 }

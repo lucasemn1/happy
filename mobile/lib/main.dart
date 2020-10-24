@@ -1,7 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_dotenv/flutter_dotenv.dart';
+import 'package:mobile/models/Orphanage.dart';
 import 'package:mobile/pages/map.dart';
+import 'package:mobile/pages/profile.dart';
 
 Future<void> main() async {
   await new DotEnv().load('.env');
@@ -26,7 +28,7 @@ class MyApp extends StatelessWidget {
         primaryColor: Color(0xFF15C3D6),
         visualDensity: VisualDensity.adaptivePlatformDensity,
       ),
-      home: Map(),
+      home: Profile(orphanage: Orphanage()),
     );
   }
 }
