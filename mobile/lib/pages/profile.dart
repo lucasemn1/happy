@@ -5,7 +5,7 @@ import 'package:flutter_map/flutter_map.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:latlong/latlong.dart';
 import 'package:mobile/models/Orphanage.dart';
-import 'package:http/http.dart' as http;
+// import 'package:http/http.dart' as http;
 import 'package:mobile/util/constant.dart';
 import 'package:mobile/widgets/InfoCard.dart';
 import 'package:mobile/widgets/HorizontalLine.dart';
@@ -29,20 +29,24 @@ class _ProfileState extends State<Profile> {
   initState() {
     super.initState();
 
-    fetchOrphanage().then(
-      (orphanage) {
-        setState(() {
-          this.orphanage = orphanage;
-        });
-      },
-    );
+    this.orphanage = widget.orphanage;
+
+    // fetchOrphanage().then(
+    //   (orphanage) {
+    //     setState(() {
+    //       this.orphanage = orphanage;
+    //     });
+    //   },
+    // );
   }
 
-  Future<Orphanage> fetchOrphanage() async {
-    http.Response response = await http.get('$BACKEND_URL/orphanage/1');
+  // Future<Orphanage> fetchOrphanage() async {
+  //   http.Response response = await http.get('$BACKEND_URL/orphanage/1');
 
-    return Orphanage.getFromResponse(response);
-  }
+  //   return Orphanage.getFromResponse(response);
+  // }
+
+  void openWhatsappChat() {}
 
   @override
   Widget build(BuildContext context) {
@@ -52,10 +56,19 @@ class _ProfileState extends State<Profile> {
         elevation: 3,
         shadowColor: Color.fromRGBO(0, 0, 0, 0.2),
         centerTitle: true,
-        leading: Icon(
-          Feather.arrow_left,
-          size: 25,
-          color: Color(0xff15B6D6),
+        leading: FlatButton(
+          onPressed: () {
+            Navigator.pop(context);
+          },
+          shape: RoundedRectangleBorder(
+            borderRadius: BorderRadius.circular(10),
+          ),
+          highlightColor: Colors.transparent,
+          child: Icon(
+            Feather.arrow_left,
+            size: 25,
+            color: Color(0xff15B6D6),
+          ),
         ),
         title: Text(
           'Orfanato',
@@ -80,126 +93,167 @@ class _ProfileState extends State<Profile> {
               }).toList(),
             ),
           ),
-          Expanded(
-            child: Container(
-              padding: EdgeInsets.only(
-                left: 24,
-                right: 24,
-                top: 35,
-              ),
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.stretch,
-                children: [
-                  CustomTitle.Title(text: this.orphanage.name),
-                  Container(
-                    margin: EdgeInsets.only(
-                      top: 15,
-                    ),
-                    child: Paragraph(
-                      text: this.orphanage.about,
+          Container(
+            padding: EdgeInsets.only(
+              left: 24,
+              right: 24,
+              top: 35,
+            ),
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.stretch,
+              children: [
+                CustomTitle.Title(text: this.orphanage.name),
+                Container(
+                  margin: EdgeInsets.only(
+                    top: 15,
+                  ),
+                  child: Paragraph(
+                    text: this.orphanage.about,
+                  ),
+                ),
+                Container(
+                  height: 196,
+                  margin: EdgeInsets.only(top: 23),
+                  decoration: BoxDecoration(
+                    borderRadius: BorderRadius.circular(20.0),
+                    color: Color(0xffE6F7FB),
+                    border: Border.all(
+                      color: Color(0xffB3DAE2),
                     ),
                   ),
-                  Container(
-                    height: 196,
-                    margin: EdgeInsets.only(top: 23),
-                    decoration: BoxDecoration(
-                        borderRadius: BorderRadius.circular(20.0),
-                        color: Color(0xffE6F7FB),
-                        border: Border.all(
-                          color: Color(0xffB3DAE2),
-                        )),
-                    clipBehavior: Clip.antiAlias,
-                    child: Column(
-                      children: [
-                        Container(
-                          height: 147,
-                          decoration: BoxDecoration(
-                            borderRadius: BorderRadius.circular(20.0),
-                          ),
-                          clipBehavior: Clip.antiAlias,
-                          child: FlutterMap(
-                            options: new MapOptions(
-                              center: new LatLng(-14.0650565, -49.1809979),
-                              zoom: 4,
+                  clipBehavior: Clip.antiAlias,
+                  child: Column(
+                    children: [
+                      Container(
+                        height: 147,
+                        decoration: BoxDecoration(
+                          borderRadius: BorderRadius.circular(20.0),
+                        ),
+                        clipBehavior: Clip.antiAlias,
+                        child: FlutterMap(
+                          options: new MapOptions(
+                            center: new LatLng(
+                              this.orphanage.latitude.toDouble(),
+                              this.orphanage.longitude.toDouble(),
                             ),
-                            layers: [
-                              TileLayerOptions(
-                                urlTemplate:
-                                    'https://api.mapbox.com/styles/v1/mapbox/light-v10/tiles/256/{z}/{x}/{y}@2x?access_token=$_token',
-                              ),
-                              MarkerLayerOptions(
-                                markers: [
-                                  Marker(
-                                    width: 80.0,
-                                    height: 80.0,
-                                    point: new LatLng(
-                                      orphanage.latitude.toDouble(),
-                                      orphanage.longitude.toDouble(),
-                                    ),
-                                    builder: (ctx) => new GestureDetector(
-                                      onTap: () {
-                                        print("Hello");
-                                      },
-                                      child: new Container(
-                                        child: SvgPicture.asset(
-                                          'assets/icons/local.svg',
-                                          width: 48,
-                                          height: 54,
-                                        ),
+                            zoom: 6,
+                          ),
+                          layers: [
+                            TileLayerOptions(
+                              urlTemplate:
+                                  'https://api.mapbox.com/styles/v1/mapbox/light-v10/tiles/256/{z}/{x}/{y}@2x?access_token=$_token',
+                            ),
+                            MarkerLayerOptions(
+                              markers: [
+                                Marker(
+                                  width: 80.0,
+                                  height: 80.0,
+                                  point: new LatLng(
+                                    orphanage.latitude.toDouble(),
+                                    orphanage.longitude.toDouble(),
+                                  ),
+                                  builder: (ctx) => new GestureDetector(
+                                    onTap: () {
+                                      print("Hello");
+                                    },
+                                    child: new Container(
+                                      child: SvgPicture.asset(
+                                        'assets/icons/local.svg',
+                                        width: 48,
+                                        height: 54,
                                       ),
                                     ),
                                   ),
-                                ],
-                              ),
-                            ],
-                          ),
-                        ),
-                        Container(
-                          margin: EdgeInsets.only(top: 13),
-                          child: Text(
-                            'Ver rotas no Google Maps',
-                            style: TextStyle(
-                              color: Color(0xff0089A5),
-                              fontSize: 15,
-                              fontWeight: FontWeight.bold,
+                                ),
+                              ],
                             ),
+                          ],
+                        ),
+                      ),
+                      Container(
+                        margin: EdgeInsets.only(top: 13),
+                        child: Text(
+                          'Ver rotas no Google Maps',
+                          style: TextStyle(
+                            color: Color(0xff0089A5),
+                            fontSize: 15,
+                            fontWeight: FontWeight.bold,
                           ),
                         ),
-                      ],
-                    ),
+                      ),
+                    ],
                   ),
-                  HorizontalLine(),
-                  CustomTitle.Title(
-                    text: 'Instruções para visita',
+                ),
+                HorizontalLine(),
+                CustomTitle.Title(
+                  text: 'Instruções para visita',
+                ),
+                Container(
+                  margin: EdgeInsets.only(
+                    top: 25,
+                    bottom: 24,
                   ),
-                  Container(
-                    margin: EdgeInsets.only(
-                      top: 25,
-                    ),
-                    child: Paragraph(
-                      text:
-                          'Venha como se sentir a vontade e traga muito amor e paciência para dar.',
-                    ),
+                  child: Paragraph(
+                    text:
+                        'Venha como se sentir a vontade e traga muito amor e paciência para dar.',
                   ),
-                  Container(
-                    height: 160,
-                    width: 300,
+                ),
+                Container(
+                  height: 160,
+                  child: Row(
+                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                    children: [
+                      InfoCard(
+                        text: this.orphanage.openingHours,
+                        iconPath: 'assets/icons/clock.png',
+                        color: Color(0xffE6F7FB),
+                        borderColor: Color(0xffB3DAE2),
+                        textColor: Color(0xff5C8599),
+                      ),
+                      InfoCard(
+                        text: 'Atendemos fim de semana',
+                        iconPath: 'assets/icons/alert.png',
+                        color: Color(0xffEDFFF6),
+                        borderColor: Color(0xffA1E9C5),
+                        textColor: Color(0xff37C77F),
+                      ),
+                    ],
+                  ),
+                ),
+                Container(
+                  margin: EdgeInsets.only(
+                    top: 20,
+                    bottom: 30,
+                  ),
+                  child: FlatButton(
+                    onPressed: () {},
+                    color: Color(0xff3CDC8C),
+                    height: 56,
+                    shape: RoundedRectangleBorder(
+                      borderRadius: BorderRadius.circular(20),
+                    ),
                     child: Row(
-                      mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                      mainAxisAlignment: MainAxisAlignment.center,
                       children: [
-                        InfoCard(
-                          text: 'Segunda à sexta 8 às 18',
-                          icon: SvgPicture.asset(
-                            'assets/icons/Clock.svg',
-                            width: 40,
-                            height: 40,
+                        Container(
+                          margin: EdgeInsets.only(
+                            right: 16,
+                          ),
+                          child: Image.asset('assets/icons/whatsapp.png'),
+                        ),
+                        Text(
+                          'Entrar em contato',
+                          style: TextStyle(
+                            fontWeight: FontWeight.bold,
+                            color: Colors.white,
+                            fontSize: 16,
                           ),
                         ),
                       ],
                     ),
                   ),
-                ],
-              ),
+                ),
+              ],
             ),
           ),
         ],

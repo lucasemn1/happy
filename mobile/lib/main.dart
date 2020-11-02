@@ -28,7 +28,7 @@ class MyApp extends StatelessWidget {
         primaryColor: Color(0xFF15C3D6),
         visualDensity: VisualDensity.adaptivePlatformDensity,
       ),
-      home: Profile(orphanage: Orphanage()),
+      home: Map(),
     );
   }
 }

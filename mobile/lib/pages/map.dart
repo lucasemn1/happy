@@ -7,6 +7,8 @@ import 'package:latlong/latlong.dart';
 import 'package:mobile/models/Orphanage.dart';
 import 'package:mobile/util/constant.dart';
 import 'package:http/http.dart' as http;
+import 'package:geolocator/geolocator.dart';
+import 'package:mobile/pages/profile.dart';
 
 class Map extends StatefulWidget {
   @override
@@ -15,12 +17,13 @@ class Map extends StatefulWidget {
 
 class _MapState extends State<Map> {
   String _token = new DotEnv().env['MAPBOX_KEY'];
-
+  LatLng latLng;
   List<Orphanage> orphanages;
 
   @override
   initState() {
     super.initState();
+    requestPermission();
 
     this.orphanages = new List<Orphanage>();
 
@@ -28,6 +31,17 @@ class _MapState extends State<Map> {
       (orphanages) => {
         setState(() {
           this.orphanages = orphanages;
+        }),
+      },
+    );
+
+    this.latLng = new LatLng(0, 0);
+
+    fetchLocation().then(
+      (latLng) => {
+        setState(() {
+          this.latLng.latitude = latLng.latitude;
+          this.latLng.longitude = latLng.longitude;
         }),
       },
     );
@@ -39,6 +53,19 @@ class _MapState extends State<Map> {
     return Orphanage.getListFromResponse(response);
   }
 
+  Future<void> requestPermission() async {
+    if (!await Geolocator.isLocationServiceEnabled()) {
+      await Geolocator.requestPermission();
+    }
+  }
+
+  Future<LatLng> fetchLocation() async {
+    Position position = await Geolocator.getCurrentPosition(
+        desiredAccuracy: LocationAccuracy.high);
+
+    return new LatLng(position.latitude, position.longitude);
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -48,8 +75,8 @@ class _MapState extends State<Map> {
             Container(
               child: FlutterMap(
                 options: new MapOptions(
-                  center: new LatLng(-14.0650565, -49.1809979),
-                  zoom: 4,
+                  center: this.latLng,
+                  zoom: 8,
                 ),
                 layers: [
                   TileLayerOptions(
@@ -68,7 +95,14 @@ class _MapState extends State<Map> {
                           ),
                           builder: (ctx) => new GestureDetector(
                             onTap: () {
-                              print("Hello");
+                              Navigator.push(
+                                context,
+                                MaterialPageRoute(
+                                  builder: (context) => Profile(
+                                    orphanage: orphanage,
+                                  ),
+                                ),
+                              );
                             },
                             child: new Container(
                               child: SvgPicture.asset(
