@@ -48,15 +48,15 @@ export default {
     const orphanageRepository = getRepository(Orphanage);
 
     let orphanages = await orphanageRepository.find({ relations: ['images'] });
-    orphanages = orphanages.map(orphanage => {
-        orphanage.images = orphanage.images.map(image => {
-          image.name = `http://localhost:3333/uploads/${image.name}`;
+    // orphanages = orphanages.map(orphanage => {
+    //     orphanage.images = orphanage.images.map(image => {
+    //       image.name = `http://localhost:3333/uploads/${image.name}`;
 
-          return image;
-        });
+    //       return image;
+    //     });
 
-        return orphanage;
-      });
+    //     return orphanage;
+    //   });
 
     return res.status(200).json(orphanages);
   },
