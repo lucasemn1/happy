@@ -18,7 +18,7 @@ class Map extends StatefulWidget {
 
 class _MapState extends State<Map> {
   String _token = new DotEnv().env['MAPBOX_KEY'];
-  LatLng latLng;
+  LatLng latLng = new LatLng(0, 0);
   List<Orphanage> orphanages;
 
   @override
@@ -41,8 +41,7 @@ class _MapState extends State<Map> {
     fetchLocation().then(
       (latLng) => {
         setState(() {
-          this.latLng.latitude = latLng.latitude;
-          this.latLng.longitude = latLng.longitude;
+          this.latLng = latLng;
         }),
       },
     );
@@ -80,7 +79,7 @@ class _MapState extends State<Map> {
       body: Container(
         child: Stack(
           children: [
-            Container(
+            if (this.latLng.latitude != 0) Container(
               child: FlutterMap(
                 options: new MapOptions(
                   center: this.latLng,
